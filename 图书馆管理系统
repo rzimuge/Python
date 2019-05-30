@@ -1,0 +1,336 @@
+class Student():
+
+    def __init__(self, Number=0,name = '', speciality='',Class=0,age = 20, sex = 'man'):
+        self.setNumber(Number)
+        self.setName(name)
+        self.setSpeciality(speciality)
+        self.setClass(Class)
+        self.setAge(age)
+        self.setSex(sex)
+        return
+    
+    def setNumber(self,Number):
+        if not isinstance(Number,int):
+            print('Number must be int')
+            return
+        self.__Number=Number
+        return
+
+    def getNumber(self):
+        return self.__Number
+
+    def setName(self, name):
+        if not isinstance(name, str):
+            print('name must be string.')
+            return
+        self.__Name = name
+        return
+    
+    def setSpeciality(self,speciality):
+        if not isinstance(speciality,str):
+            print('speciality must be string')
+            return
+        self.__Speciality=speciality
+        return
+
+    def setClass(self,Class):
+        if not isinstance(Class,int):
+            print('Class must be int')
+            return
+        self.__Class=Class
+        return
+
+    def setAge(self, age):
+        if not isinstance(age, int):
+            print('age must be integer.')
+            return
+        self.__Age = age
+        return
+
+    def setSex(self, sex):
+        if sex != 'man' and sex != 'woman':
+            print('sex must be "man" or "woman"')
+            return
+        self.__Sex = sex
+        return
+
+    def judge(self,StuN):
+        if StuN==self.__Number:
+            return 1
+        else:
+            return -1
+
+    def show(self):
+        print( self.__Number,self.__Name, self.__Speciality, self.__Class,  self.__Age,  self.__Sex)
+        return
+
+    def show1(self):
+        print('Number:', self.__Number)
+        print('Name:', self.__Name)
+        print('speciality:', self.__Speciality)
+        print('Class:', self.__Class)
+        print('Age:',  self.__Age)
+        print('Sex:',  self.__Sex)
+        print()
+        return
+
+class Book():
+
+    def __init__(self, Number=0,Name = '',Writer=''):
+        self.setNumber(Number)
+        self.setName(Name)
+        self.setWriter(Writer)
+        return
+    
+    def setNumber(self,Number):
+        if not isinstance(Number,int):
+            print('Number must be int')
+            return
+        self.__Number=Number
+        return
+
+    def setName(self, Name):
+        if not isinstance(Name, str):
+            print('Name must be string.')
+            return
+        self.__Name = Name
+        return
+    
+    def setWriter(self,Writer):
+        if not isinstance(Writer,str):
+            print('Writer must be string')
+            return
+        self.__Writer=Writer
+        return
+
+    def judge(self,BooN):
+        if BooN==self.__Number:
+            return 1
+        else:
+            return -1
+
+    def show(self):
+        print( self.__Number,self.__Name, self.__Writer)
+        return
+
+    def show1(self):
+        print('Number:', self.__Number)
+        print('Name:', self.__Name)
+        print('Writer:', self.__Writer)
+        print()
+        return
+
+class Manger():
+    
+    def __init__(self,StudentForm=[],BookForm=[]):
+        self.setHistory()
+        self.setStudentForm(StudentForm)
+        self.setBookForm(BookForm)
+        self.setRecord()
+        return
+
+    def setHistory(self):
+        self.__History=[]
+        return
+
+    def setRecord(self):
+        self.__Record=dict()
+        for i in range(len(self.__StudentForm)):
+            self.__Record.setdefault(self.__StudentForm[i].getNumber(),[])
+
+        return
+
+    def setStudentForm(self,StudentForm):
+        self.__StudentForm=StudentForm      
+        return
+
+    def setBookForm(self,BookForm):
+        self.__BookForm=BookForm
+        return
+
+    def lend(self,StuN,BookN):
+        if not isinstance(StuN,int) or not isinstance(BookN,int):
+            print('Student number or book number must all be int')
+            return
+
+        for i in range(len(self.__StudentForm)):                    #检查系统是否有这个人
+            if self.__StudentForm[i].judge(StuN)==1:
+                for j in range(len(self.__BookForm)):               #检查系统是否有这本书
+                    if self.__BookForm[j].judge(BookN)==1:  
+                        self.__Record.setdefault(StuN,[]).append(BookN) 
+                        his=[StuN,BookN,1]
+                        self.__History.append(his)
+                        return 1
+                print("查无此书!")
+                return -1
+        print("查无此人!")
+        return -1
+
+    def sendBack(self,StuN,BookN):
+        if not isinstance(StuN,int) or not isinstance(BookN,int):
+            print('Student number or book number must all be int')
+            return
+        for i in range(len(self.__StudentForm)):                    #检查系统是否有这个人
+            if self.__StudentForm[i].judge(StuN)==1:
+                for j in range(len(self.__BookForm)):               #检查系统是否有这本书
+                    if self.__BookForm[j].judge(BookN)==1:  
+                        if BookN not in self.__Record[StuN]:
+                            print("该同学未借本书.")
+                            return -1
+                        else:
+                            self.__Record[StuN].remove(BookN)
+                            his=[StuN,BookN,0]
+                            self.__History.append(his)
+                            return 1
+                print("查无此书!")
+                return -1
+        print("查无此人!")
+        return -1
+
+    def showHistory(self):
+        if len(self.__History)==0:
+            print('无借阅记录')
+            print()
+            return
+
+        for i in range(len(self.__History)):
+            if self.__History[i][2]==1:
+                print(self.__History[i][0],'借走了',self.__History[i][1])
+            else:
+                print(self.__History[i][0],'还了',self.__History[i][1])
+        print()
+        return
+
+    def showRecord(self):
+        for i in self.__Record.items():
+            print(i)
+        print()
+        return
+
+    def showStudent(self):
+        for i in range(len(self.__StudentForm)):
+            self.__StudentForm[i].show()
+        print()
+        return
+
+    def showBook(self):
+        for i in range(len(self.__BookForm)):
+            self.__BookForm[i].show()
+        print()
+        return
+
+def mangerUI(C):
+    while 1:
+        print('欢迎进入图书馆管理员系统')
+        print('按1查看借阅记录')
+        print("按2查看当前借阅关系")
+        print('按3查看当前记录学生')
+        print('按4查看馆内书籍')
+        print("按E退出")
+        x=input()
+        if x=='1':
+            C.showHistory()
+            continue
+        
+        if x=='2':
+            C.showRecord()
+            continue
+
+        if x=='3':
+            C.showStudent()
+            continue
+
+        if x=='4':
+            C.showBook()
+            continue
+        
+        if x=='E':
+            return
+
+        continue
+
+def UI(C):
+    print('欢迎来到图书馆')
+    while 1:
+        print('您好,请问你是借书还是还书?(按S查看馆内书籍/按L借书/按B还书/按E退出/按R进入管理员模式)')
+        x=input()
+        if x=='S':
+            C.showBook()
+            print("是否退出系统?(Y/N)")
+            x=input()
+            if x=='Y':
+                return
+            else:
+                continue
+
+        if x=='L':
+            print('请输入您的学号:')
+            StuN=input()
+            StuN=int(StuN)
+            print('请输入您要借的书号:')
+            BookN=input()
+            BookN=int(BookN)
+            t=C.lend(StuN,BookN)    
+            if t==1:
+                print("借阅成功,请到指定地点取书!")
+            print("是否退出系统?(Y/N)")
+            x=input()
+            if x=='Y':
+                return
+            else:
+                continue
+
+        if x=='B':
+            print('请输入您的学号:')
+            StuN=input()
+            StuN=int(StuN)
+            print('请输入您要还的书号:')
+            BookN=input()
+            BookN=int(BookN)
+            t=C.sendBack(StuN,BookN)  
+            if t==1:
+                print("成功归还,请到指定地点还书!")           
+            print("是否退出系统?(Y/N)")
+            x=input()
+            if x=='Y':
+                return
+            else:
+                continue
+
+        if x=='E':
+            print('再见!')
+            break
+
+        if x=='R':
+            print('请输入您的密钥(PS:12346(字符串))')
+            x=input()
+            if x=="123456":
+                mangerUI(C)
+                continue
+            else:
+                print("error")
+             
+        print('错误,重新启动')
+        continue
+
+    return 
+
+            
+
+
+Sf=[]
+S1=Student(20177710414,'黄相铭','计算机科学与技术',4,20,'man')
+S2=Student(20177710415,'黄相','计算机科学与技术',4,21,'man')
+S3=Student(20177710416,'黄铭','计算机科学与技术',4,20,'woman')
+S4=Student(20177710417,'黄小','计算机科学与技术',4,22,'woman')
+Sf.extend([S1,S2,S3,S4])
+Bf=[]
+B1=Book(9,'新华字典',"jike")
+B2=Book(8,'C++',"adsad")
+B3=Book(7,'python',"fd")
+B4=Book(4,'arduino',"hty")
+B5=Book(5,'java',"sd")
+B6=Book(6,'html',"dfsg")
+Bf.extend([B1,B2,B3,B4,B5,B6])
+C=Manger(Sf,Bf)
+UI(C)
